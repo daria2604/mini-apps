@@ -1,16 +1,20 @@
 import { useState } from 'react';
 import './App.css';
+import Age from './Age';
 
 function App() {
   const [fact, setFact] = useState('');
 
-  function fetchCatFacts() {
-    fetch('https://catfact.ninja/fact')
-      .then((res) => res.json())
-      .then((data) => {
-        setFact(data.fact);
-        setCursor(data.fact);
-      });
+  const fetchCatFacts = async () => {
+    try {
+      const response = await fetch('https://catfact.ninja/fact');
+      const facts = await response.json();
+      
+      setFact(facts.fact);
+      setCursor(facts.fact);
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   function setCursor(sentence) {
@@ -36,6 +40,8 @@ function App() {
           defaultValue={fact}
         ></textarea>
       </div>
+
+      <Age />
     </>
   );
 }
