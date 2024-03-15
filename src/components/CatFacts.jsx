@@ -1,21 +1,19 @@
 import { useState } from 'react';
-import './App.css';
-import Age from './Age';
 
-function App() {
+const CatFacts = () => {
   const [fact, setFact] = useState('');
 
   const fetchCatFacts = async () => {
     try {
       const response = await fetch('https://catfact.ninja/fact');
       const facts = await response.json();
-      
+
       setFact(facts.fact);
       setCursor(facts.fact);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   function setCursor(sentence) {
     const words = sentence.split(' ');
@@ -29,21 +27,17 @@ function App() {
   }
 
   return (
-    <>
-      <div>
-        <button onClick={fetchCatFacts}>get a fact</button>
-        <textarea
-          name='catfact'
-          id='catFact'
-          cols='30'
-          rows='10'
-          defaultValue={fact}
-        ></textarea>
-      </div>
-
-      <Age />
-    </>
+    <div>
+      <button onClick={fetchCatFacts}>get a fact</button>
+      <textarea
+        name='catfact'
+        id='catFact'
+        cols='30'
+        rows='10'
+        defaultValue={fact}
+      ></textarea>
+    </div>
   );
-}
+};
 
-export default App;
+export default CatFacts;

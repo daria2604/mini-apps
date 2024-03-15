@@ -37,6 +37,8 @@ function Age() {
       } finally {
         setIsLoading(false);
       }
+    } else {
+      setError('Введите другое имя.')
     }
   };
 
