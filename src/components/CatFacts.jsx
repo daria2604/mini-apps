@@ -1,3 +1,10 @@
+import {
+  Button,
+  Div,
+  FormItem,
+  FormLayoutGroup,
+  Textarea,
+} from '@vkontakte/vkui';
 import { useState } from 'react';
 
 const CatFacts = () => {
@@ -27,16 +34,21 @@ const CatFacts = () => {
   }
 
   return (
-    <div>
-      <button onClick={fetchCatFacts}>get a fact</button>
-      <textarea
-        name='catfact'
-        id='catFact'
-        cols='30'
-        rows='10'
-        defaultValue={fact}
-      ></textarea>
-    </div>
+    <FormLayoutGroup mode='vertical'>
+      <Div style={{ textAlign: 'center' }}>
+        <FormItem htmlFor='fact'>
+          <Textarea
+            name='catfact'
+            id='catFact'
+            placeholder='Здесь будет факт о кошках.'
+            defaultValue={fact}
+          />
+        </FormItem>
+        <Button size='l' onClick={fetchCatFacts}>
+          Узнать факт
+        </Button>
+      </Div>
+    </FormLayoutGroup>
   );
 };
 

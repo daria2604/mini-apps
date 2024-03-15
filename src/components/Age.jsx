@@ -1,10 +1,18 @@
+import {
+  Button,
+  Div,
+  FormItem,
+  FormLayoutGroup,
+  Input,
+  Text,
+} from '@vkontakte/vkui';
 import { useState, useEffect } from 'react';
 
 function Age() {
-  const [age, setAge] = useState(0);
+  const [age, setAge] = useState(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [id, setId] = useState('');
+  const [name, setName] = useState('');
   const [prevQuery, setPrevQuery] = useState('');
 
   const abortController = new AbortController();
@@ -17,19 +25,18 @@ function Age() {
       clearTimeout(timer);
       abortController.abort();
     };
-  }, [id, prevQuery]);
+  }, [name, prevQuery]);
 
   const fetchData = async () => {
-    if (id && prevQuery !== id) {
+    if (name && prevQuery !== name) {
       setIsLoading(true);
       try {
-        const response = await fetch(
-          `https://jsonplaceholder.typicode.com/users/${id}`,
-          { signal }
-        );
+        const response = await fetch(`https://api.agify.io?name=${name}`, {
+          signal,
+        });
         const data = await response.json();
-        setAge(data.name);
-        setPrevQuery(id);
+        setAge(data.age);
+        setPrevQuery(name);
         setError('');
       } catch (error) {
         console.error(error);
@@ -37,13 +44,11 @@ function Age() {
       } finally {
         setIsLoading(false);
       }
-    } else {
-      setError('Введите другое имя.')
     }
   };
 
   function handleChange(evt) {
-    setId(evt.target.value);
+    setName(evt.target.value);
     setError('');
     abortController.abort();
   }
@@ -51,21 +56,40 @@ function Age() {
   function handleSubmit(evt) {
     evt.preventDefault();
     fetchData();
+
+    if (prevQuery === name) {
+      setError('Введите другое имя');
+    }
   }
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <input
-          type='text'
-          placeholder='Введите ваше имя'
-          onChange={handleChange}
-        />
-        <button type='submit'>Получить возраст</button>
-      </form>
-      {error && <p>{error}</p>}
-      {isLoading && <p>Loading...</p>}
-      <p>Ваш возраст: {age}</p>
+      <FormLayoutGroup mode='vertical'>
+        <form onSubmit={handleSubmit} style={{ textAlign: 'center' }}>
+          <FormItem htmlFor='name'>
+            <Input
+              id='name'
+              type='text'
+              placeholder='Введите имя на английском языке'
+              onChange={handleChange}
+            />
+          </FormItem>
+
+          {(error || isLoading || age) && (
+            <Div style={{ textAlign: 'center' }}>
+              {error && <Text>{error}</Text>}
+              {(!age && isLoading) && <Text>Загрузка...</Text>}
+              {age && (
+                <Text>Ваш возраст: {isLoading ? 'Загрузка...' : age}</Text>
+              )}
+            </Div>
+          )}
+
+          <Button size='l' type='submit'>
+            Узнать возраст
+          </Button>
+        </form>
+      </FormLayoutGroup>
     </>
   );
 }
